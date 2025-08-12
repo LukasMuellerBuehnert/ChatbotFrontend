@@ -21,8 +21,8 @@
   <div id="chatWindow"
        class="fixed z-50 right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] w-[92vw] max-w-xl bg-white shadow-xl rounded-2xl border border-gray-200 hidden">
     <!-- Header -->
-    <div class="p-5 border-b border-gray-200 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Website-Chatbot</h2>
+    <div class="p-5 flex items-center justify-between">
+      <h2 class="text-xl font-semibold">Lukas Demo Chatbot</h2>
       <button id="chatClose" class="p-1 rounded hover:bg-gray-100" aria-label="Schließen">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.29 19.71 2.88 18.3 9.17 12 2.88 5.71 4.29 4.29 10.59 10.6l6.3-6.31z"/>
@@ -31,23 +31,22 @@
     </div>
 
     <!-- Chat area -->
-    <div id="chat" class="space-y-3 bg-gray-100 rounded-xl px-3 py-3
-                         h-[70vh] md:h-96 overflow-y-auto">
-      <!-- Nachrichten -->
+    <div id="chat"
+         class="space-y-3 bg-gray-100 rounded-xl border border-gray-300 mx-3 px-3 py-3
+                h-80 overflow-y-auto">
     </div>
 
     <!-- Composer -->
-    <form id="form" class="flex gap-2 p-3 border-t border-gray-200">
+    <form id="form" class="flex gap-2 p-3 items-center">
       <input id="msg" type="text" placeholder="Frage eingeben…"
-             class="flex-1 rounded-xl border border-gray-300 px-4 py-2
+             class="min-w-0 flex-1 rounded-xl border border-gray-300 px-4 py-2
                     focus:outline-none focus:ring-2 focus:ring-blue-500">
       <button id="sendBtn" type="submit"
-              class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-50">
+              class="shrink-0 rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-50">
         Senden
       </button>
     </form>
 
-    <p class="text-xs text-gray-500 px-3 pb-3">Demo – schickt Anfragen an dein Render-Backend.</p>
   </div>
 
   <script src="chat.js"></script>
