@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Chatbot</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen">
 
-  <!-- Floating Chat Button -->
+  <!-- Floating Toggle Button -->
   <button id="chatToggle"
-    class="fixed bottom-4 right-4 z-50 rounded-full w-14 h-14 flex items-center justify-center shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
+    class="fixed z-50 right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] rounded-full w-14 h-14 flex items-center justify-center shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
     aria-label="Chat öffnen/schließen" title="Chat öffnen/schließen">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
       <path d="M20 2H4a2 2 0 0 0-2 2v16l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
@@ -19,7 +19,8 @@
 
   <!-- Floating Chat Window -->
   <div id="chatWindow"
-       class="fixed bottom-20 right-4 z-50 w-full max-w-xl bg-white shadow-xl rounded-2xl border border-gray-200 hidden">
+       class="fixed z-50 right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] w-[92vw] max-w-xl bg-white shadow-xl rounded-2xl border border-gray-200 hidden">
+    <!-- Header -->
     <div class="p-5 border-b border-gray-200 flex items-center justify-between">
       <h2 class="text-xl font-semibold">Website-Chatbot</h2>
       <button id="chatClose" class="p-1 rounded hover:bg-gray-100" aria-label="Schließen">
@@ -29,20 +30,24 @@
       </button>
     </div>
 
-    <div id="chat" class="h-80 overflow-y-auto space-y-3 p-3 bg-gray-100 rounded-xl">
-      <!-- Nachrichten erscheinen hier -->
+    <!-- Chat area -->
+    <div id="chat" class="space-y-3 bg-gray-100 rounded-xl px-3 py-3
+                         h-[70vh] md:h-96 overflow-y-auto">
+      <!-- Nachrichten -->
     </div>
 
-    <form id="form" class="mt-4 flex gap-2 p-3">
+    <!-- Composer -->
+    <form id="form" class="flex gap-2 p-3 border-t border-gray-200">
       <input id="msg" type="text" placeholder="Frage eingeben…"
-             class="flex-1 rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+             class="flex-1 rounded-xl border border-gray-300 px-4 py-2
+                    focus:outline-none focus:ring-2 focus:ring-blue-500">
       <button id="sendBtn" type="submit"
               class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-50">
         Senden
       </button>
     </form>
 
-    <p class="text-xs text-gray-500 mt-2 px-3 pb-3">Demo – schickt Anfragen an dein Render-Backend.</p>
+    <p class="text-xs text-gray-500 px-3 pb-3">Demo – schickt Anfragen an dein Render-Backend.</p>
   </div>
 
   <script src="chat.js"></script>
