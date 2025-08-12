@@ -72,3 +72,5 @@ form.addEventListener("submit", (e) => {
   const text = input.value.trim();
   if (text) sendMessage(text);
 });
+
+openChat();
