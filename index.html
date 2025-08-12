@@ -6,49 +6,68 @@
   <title>Chatbot</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-  <div class="w-full max-w-xl">
-    <div class="bg-white shadow-xl rounded-2xl p-5">
-      <h1 class="text-xl font-semibold mb-4">Website-Chatbot</h1>
+<body class="min-h-screen">
 
-      <div id="chat" class="h-80 overflow-y-auto space-y-3 p-3 bg-gray-100 rounded-xl">
-        <!-- Nachrichten erscheinen hier -->
-      </div>
+  <!-- Floating Chat Button -->
+  <button id="chatToggle"
+    class="fixed bottom-4 right-4 z-50 rounded-full w-14 h-14 flex items-center justify-center shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
+    aria-label="Chat öffnen/schließen" title="Chat öffnen/schließen">
+    <!-- Chat Icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 2H4a2 2 0 0 0-2 2v16l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
+    </svg>
+  </button>
 
-      <form id="form" class="mt-4 flex gap-2">
-        <input id="msg" type="text" placeholder="Frage eingeben…" 
-               class="flex-1 rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <button id="sendBtn" type="submit" 
-                class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-50">
-          Senden
-        </button>
-      </form>
-
-      <p class="text-xs text-gray-500 mt-2">Demo – schickt Anfragen an dein Render-Backend.</p>
+  <!-- Floating Chat Window -->
+  <div id="chatWindow"
+       class="fixed bottom-20 right-4 z-50 w-[92vw] max-w-md bg-white shadow-2xl rounded-2xl border border-gray-200 hidden">
+    <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+      <h2 class="text-base font-semibold">Website-Chatbot</h2>
+      <button id="chatClose" class="p-1 rounded hover:bg-gray-100" aria-label="Schließen">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.29 19.71 2.88 18.3 9.17 12 2.88 5.71 4.29 4.29 10.59 10.6l6.3-6.31z"/>
+        </svg>
+      </button>
     </div>
+
+    <div id="chat" class="h-80 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-b-2xl">
+      <!-- Nachrichten erscheinen hier -->
+    </div>
+
+    <form id="form" class="p-3 border-t border-gray-200 flex gap-2">
+      <input id="msg" type="text" placeholder="Frage eingeben…"
+             class="flex-1 rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button id="sendBtn" type="submit"
+              class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 disabled:opacity-50">
+        Senden
+      </button>
+    </form>
   </div>
 
   <script>
     const API_URL = "https://chatbotbackend-v5bj.onrender.com/chat";
 
-    const chat = document.getElementById("chat");
+    const chatBox = document.getElementById("chat");
     const form = document.getElementById("form");
     const input = document.getElementById("msg");
     const sendBtn = document.getElementById("sendBtn");
+    const chatWindow = document.getElementById("chatWindow");
+    const chatToggle = document.getElementById("chatToggle");
+    const chatClose  = document.getElementById("chatClose");
 
     function addMessage(text, who) {
       const wrap = document.createElement("div");
       wrap.className = `flex ${who === "user" ? "justify-end" : "justify-start"}`;
       const bubble = document.createElement("div");
       bubble.className = `max-w-[80%] px-3 py-2 rounded-2xl text-sm ${
-        who === "user" 
-          ? "bg-blue-600 text-white rounded-br-none" 
+        who === "user"
+          ? "bg-blue-600 text-white rounded-br-none"
           : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
       }`;
       bubble.textContent = text;
       wrap.appendChild(bubble);
-      chat.appendChild(wrap);
-      chat.scrollTop = chat.scrollHeight;
+      chatBox.appendChild(wrap);
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     async function sendMessage(text) {
@@ -56,12 +75,11 @@
       input.value = "";
       input.disabled = true; sendBtn.disabled = true;
 
-      // kleiner „Tippen…“-Placeholder
       const typing = document.createElement("div");
       typing.className = "text-xs text-gray-500";
       typing.textContent = "Bot tippt…";
-      chat.appendChild(typing);
-      chat.scrollTop = chat.scrollHeight;
+      chatBox.appendChild(typing);
+      chatBox.scrollTop = chatBox.scrollHeight;
 
       try {
         const res = await fetch(API_URL, {
@@ -72,7 +90,7 @@
         const data = await res.json();
         typing.remove();
         addMessage(data.answer || "Fehler.", "bot");
-      } catch (e) {
+      } catch {
         typing.remove();
         addMessage("Netzwerkfehler oder CORS blockiert.", "bot");
       } finally {
@@ -80,13 +98,39 @@
       }
     }
 
+    // Begrüßung beim Öffnen des Widgets
+    function greetOnce() {
+      if (!chatBox.dataset.greeted) {
+        addMessage("Hi! Wie kann ich helfen?", "bot");
+        chatBox.dataset.greeted = "1";
+      }
+    }
+
+    // Toggle-Logik
+    function openChat() {
+      chatWindow.classList.remove("hidden");
+      greetOnce();
+      input.focus();
+    }
+    function closeChat() {
+      chatWindow.classList.add("hidden");
+    }
+
+    chatToggle.addEventListener("click", () => {
+      if (chatWindow.classList.contains("hidden")) openChat();
+      else closeChat();
+    });
+    chatClose.addEventListener("click", closeChat);
+
+    // Senden
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const text = input.value.trim();
       if (text) sendMessage(text);
     });
 
-    // Enter löst Senden aus, Shift+Enter = neue Zeile (falls später textarea)
+    // Optional: Beim Seitenladen schon geöffnet + Begrüßung
+    // openChat(); // <- einkommentieren, wenn du es sofort offen haben willst
   </script>
 </body>
 </html>
