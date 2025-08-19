@@ -1,0 +1,20 @@
+<?php
+/**
+ * Plugin Name: Chatbot Widget
+ * Description: Fügt ein Chat-Fenster auf jeder Seite ein.
+ * Version: 1.0
+ * Author: Lukas
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Schutz vor direktem Zugriff
+
+// CSS/JS einbinden
+add_action('wp_enqueue_scripts', function() {
+    wp_enqueue_script('chatbot-script', plugin_dir_url(__FILE__) . 'chat.js', [], false, true);
+    wp_enqueue_style('chatbot-style', plugin_dir_url(__FILE__) . 'chat.css');
+});
+
+// Chat-HTML ins Footer einfügen
+add_action('wp_footer', function() {
+    include plugin_dir_path(__FILE__) . 'chat.html';
+});
